@@ -99,9 +99,6 @@
     background: #142332b8; border: 1px solid #ffffff50;
     font-size: 22px; user-select: none; -webkit-user-select: none;
   }
-  #touch button[data-key="ArrowUp"] {
-    background: #ed303bcc; height: 86px; font-size: 13px;
-  }
   #touch button[data-key="Space"] { font-size: 12px; }
   #touch .recoverGroup {
     position: absolute; left: 50%; bottom: 72px;
@@ -163,10 +160,6 @@
   <div class="touchGroup">
     <button data-key="ArrowLeft">◀</button>
     <button data-key="ArrowRight">▶</button>
-  </div>
-  <div class="touchGroup">
-    <button data-key="TouchReverse">▼ DOWN</button>
-    <button data-key="ArrowUp">▲ UP</button>
   </div>
   <div class="touchGroup recoverGroup">
     <button data-key="KeyR">RECOVER</button>
@@ -722,7 +715,7 @@ function updatePlayer(dt) {
   const throttle=keys.ArrowUp||keys.KeyW;
   const reverse=keys.TouchReverse;
   const brake=keys.ArrowDown||keys.KeyS||keys.Space;
-  const input=(keys.ArrowRight||keys.KeyD?1:0)-(keys.ArrowLeft||keys.KeyA?1:0);
+  const input=(keys.ArrowLeft||keys.KeyA?1:0)-(keys.ArrowRight||keys.KeyD?1:0);
   player.steer=lerp(player.steer,input,1-Math.exp(-7*dt));
 
   const near=nearestTrack(player.x,player.z,player.index);
