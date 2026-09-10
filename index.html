@@ -737,6 +737,7 @@ function updatePlayer(dt) {
   const drag=(player.offroad?4.5:.65)+.0047*speed*speed;
   const rollingDrag=speed>0?drag:-drag;
   speed+=((throttle?acceleration:0)-(reverse?acceleration:0)-rollingDrag-(brake?34:0))*dt;
+  if(!Number.isFinite(speed)) speed=0;
   speed=clamp(speed,-25,65);
   sideways*=Math.exp(-(player.offroad?3:10)*dt);
 
@@ -941,7 +942,7 @@ function frame(now) {
   if(paused) $('message').textContent='PAUSED';
   else if(started&&countdown<=0&&raceTime>=.65) $('message').textContent='';
 
-  const kmh=Math.round(player.speed*3.6);
+  const kmh=Math.round(Number.isFinite(player.speed)?player.speed*3.6:0);
   const gear=kmh<3?0:Math.min(8,1+Math.floor(kmh/31));
   const rpm=gear===0?.13:clamp((kmh-(gear-1)*31)/36,.15,1);
 
@@ -957,12 +958,13 @@ function frame(now) {
     const running=started&&!paused&&!finished;
     const accelerating=keys.ArrowUp||keys.KeyW;
     const hz=85+rpm*145+gear*13;
-    osc1.frequency.setTargetAtTime(hz,audio.currentTime,.08);
-    osc2.frequency.setTargetAtTime(hz*2.015,audio.currentTime,.08);
-    filter.frequency.setTargetAtTime(500+rpm*2100,audio.currentTime,.1);
+    const audioTime=Number.isFinite(audio.currentTime)?audio.currentTime:0;
+    osc1.frequency.setTargetAtTime(hz,audioTime,.08);
+    osc2.frequency.setTargetAtTime(hz*2.015,audioTime,.08);
+    filter.frequency.setTargetAtTime(500+rpm*2100,audioTime,.1);
     gain.gain.setTargetAtTime(
       soundEnabled&&running?(accelerating?.055:.028):0,
-      audio.currentTime,.15
+      audioTime,.15
     );
   }
 
