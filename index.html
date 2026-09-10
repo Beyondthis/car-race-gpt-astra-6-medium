@@ -103,6 +103,11 @@
     background: #ed303bcc; height: 86px; font-size: 13px;
   }
   #touch button[data-key="Space"] { font-size: 12px; }
+  #touch .recoverGroup {
+    position: absolute; left: 50%; bottom: 72px;
+    transform: translateX(-50%);
+  }
+  #touch button[data-key="KeyR"] { font-size: 10px; }
   @media (pointer: coarse) {
     #touch { display: flex; }
     #help { display: none; }
@@ -162,6 +167,9 @@
   <div class="touchGroup">
     <button data-key="Space">BRAKE</button>
     <button data-key="ArrowUp">GAS</button>
+  </div>
+  <div class="touchGroup recoverGroup">
+    <button data-key="KeyR">RECOVER</button>
   </div>
 </div>
 
@@ -695,7 +703,9 @@ addEventListener('blur',()=>{
 document.querySelectorAll('[data-key]').forEach(button=>{
   const key=button.dataset.key;
   button.addEventListener('pointerdown',e=>{
-    e.preventDefault();button.setPointerCapture(e.pointerId);keys[key]=true;
+    e.preventDefault();button.setPointerCapture(e.pointerId);
+    if(key==='KeyR') recover();
+    else keys[key]=true;
   });
   for(const event of ['pointerup','pointercancel','lostpointercapture'])
     button.addEventListener(event,()=>keys[key]=false);
