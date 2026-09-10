@@ -165,8 +165,8 @@
     <button data-key="ArrowRight">▶</button>
   </div>
   <div class="touchGroup">
-    <button data-key="Space">BRAKE</button>
-    <button data-key="ArrowUp">GAS</button>
+    <button data-key="TouchReverse">▼ DOWN</button>
+    <button data-key="ArrowUp">▲ UP</button>
   </div>
   <div class="touchGroup recoverGroup">
     <button data-key="KeyR">RECOVER</button>
@@ -720,6 +720,7 @@ function animateWheels(mesh,speed,steering,dt) {
 
 function updatePlayer(dt) {
   const throttle=keys.ArrowUp||keys.KeyW;
+  const reverse=keys.TouchReverse;
   const brake=keys.ArrowDown||keys.KeyS||keys.Space;
   const input=(keys.ArrowRight||keys.KeyD?1:0)-(keys.ArrowLeft||keys.KeyA?1:0);
   player.steer=lerp(player.steer,input,1-Math.exp(-7*dt));
@@ -734,8 +735,9 @@ function updatePlayer(dt) {
 
   const acceleration=player.offroad?7.5:17.5;
   const drag=(player.offroad?4.5:.65)+.0047*speed*speed;
-  speed+=((throttle?acceleration:0)-drag-(brake?34:0))*dt;
-  speed=clamp(speed,0,65);
+  const rollingDrag=speed>0?drag:-drag;
+  speed+=((throttle?acceleration:0)-(reverse?acceleration:0)-rollingDrag-(brake?34:0))*dt;
+  speed=clamp(speed,-25,65);
   sideways*=Math.exp(-(player.offroad?3:10)*dt);
 
   const steeringAngle=player.steer*.51/(1+speed*.04);
